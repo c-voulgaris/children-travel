@@ -72,7 +72,7 @@ indie_active_summary <-
                            TRPTRANS == "04"))  # Pickup truck      
     }
     
-    trips <- trips %>%
+    trips %>%
       select(HOUSEID, # Household identifier 
              PERSONID, # Person identifier (within household)
              TRPTRANS, # Mode of transportation
@@ -129,7 +129,7 @@ indie_active_summary <-
                 bike_trips = sum(is_bike, na.rm = TRUE),
                 car_trips = sum(is_car, na.rm = TRUE),
                 alone_trips = sum(alone, na.rm = TRUE),
-                indie_trips = sum(with_hh_adult, na.rm = TRUE),
+                indie_trips = sum(!with_hh_adult, na.rm = TRUE),
                 transit_trips = sum(is_transit, na.rm = TRUE),
                 walk_alone_trips = sum(walk_alone, na.rm = TRUE),
                 bike_alone_trips = sum(bike_alone, na.rm = TRUE),
@@ -160,6 +160,7 @@ indie_active_summary <-
       as_survey_design(weight = WTPERFIN) %>%
       group_by(age_group) %>%
       summarise(pct_any_trip = survey_mean(any_trips),
+                avg_trips = survey_mean(trips),
                 pct_alone = survey_mean(any_alone),
                 pct_indie = survey_mean(any_indie),
                 pct_walk = survey_mean(any_walk),
@@ -249,7 +250,14 @@ ggplot(all_years) +
                color = age_group,
                lty = age_group,
                y = pct_any_trip)) +
-  scale_y_continuous(name = "Share of population who made a trip on the survey day",
+  geom_errorbar(aes(x = as_factor(year),
+                    group = age_group,
+                    color = age_group,
+                    lty = age_group,
+                    ymin = pct_any_trip - (1.96*pct_any_trip_se),
+                    ymax = pct_any_trip + (1.96*pct_any_trip_se)),
+                width = 0.1) +
+  scale_y_continuous(name = "Share of population who made\na trip on the survey day",
                      limits = c(0.7,1),
                      breaks = breaks <- seq(0.7, 1, by = 0.05),
                      labels = paste0(breaks*100, "%")) +
@@ -258,11 +266,57 @@ ggplot(all_years) +
                        labels = c("5 to 9",
                                   "10 to 15",
                                   "16 to 17")) +
-  scale_linetype_discrete(name = "Age group",
+  scale_linetype_manual(name = "Age group",
+                       labels = c("5 to 9",
+                                  "10 to 15",
+                                  "16 to 17"),
+                       values = c("dotted",
+                                  "solid",
+                                  "dashed")) +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "white"))
+
+here("results",
+     "figures",
+     "pct_any_trip.png") %>%
+  ggsave(width = 5, height = 3, dpi = 300, units = "in")
+
+
+ggplot(all_years) +
+  geom_line(aes(x = as_factor(year),
+                group = age_group,
+                color = age_group,
+                lty = age_group,
+                y = avg_trips)) +
+  geom_errorbar(aes(x = as_factor(year),
+                    group = age_group,
+                    color = age_group,
+                    lty = age_group,
+                    ymin = avg_trips - (1.96*avg_trips_se),
+                    ymax = avg_trips + (1.96*avg_trips_se)),
+                width = 0.1) +
+  scale_y_continuous(name = "Average number of daily trips",
+                     limits = c(0,4.5),
+                     breaks = breaks <- seq(0, 4.5, by = 0.5)) +
+  scale_x_discrete(name = "Year") +
+  scale_color_discrete(name = "Age group",
                        labels = c("5 to 9",
                                   "10 to 15",
                                   "16 to 17")) +
-  theme_minimal()
+  scale_linetype_manual(name = "Age group",
+                        labels = c("5 to 9",
+                                   "10 to 15",
+                                   "16 to 17"),
+                        values = c("dotted",
+                                   "solid",
+                                   "dashed")) +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "white"))
+
+here("results",
+     "figures",
+     "trip_count.png") %>%
+  ggsave(width = 5, height = 3, dpi = 300, units = "in")
 
 ggplot(all_years) +
   geom_line(aes(x = as_factor(year),
@@ -270,20 +324,36 @@ ggplot(all_years) +
                 color = age_group,
                 lty = age_group,
                 y = pct_alone)) +
-  scale_y_continuous(name = "Share of population who made a trip alone",
+  geom_errorbar(aes(x = as_factor(year),
+                    group = age_group,
+                    color = age_group,
+                    lty = age_group,
+                    ymin = pct_alone - (1.96*pct_alone_se),
+                    ymax = pct_alone + (1.96*pct_alone_se)),
+                width = 0.1) +
+  scale_y_continuous(name = "Share of population who\nmade a trip alone",
                      limits = c(0,1),
-                     breaks = breaks <- seq(0, 1, by = 0.05),
+                     breaks = breaks <- seq(0, 1, by = 0.1),
                      labels = paste0(breaks*100, "%")) +
   scale_x_discrete(name = "Year") +
   scale_color_discrete(name = "Age group",
                        labels = c("5 to 9",
                                   "10 to 15",
                                   "16 to 17")) +
-  scale_linetype_discrete(name = "Age group",
-                          labels = c("5 to 9",
-                                     "10 to 15",
-                                     "16 to 17")) +
-  theme_minimal()
+  scale_linetype_manual(name = "Age group",
+                        labels = c("5 to 9",
+                                   "10 to 15",
+                                   "16 to 17"),
+                        values = c("dotted",
+                                   "solid",
+                                   "dashed")) +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "white"))
+
+here("results",
+     "figures",
+     "pct_alone.png") %>%
+  ggsave(width = 5, height = 3, dpi = 300, units = "in")
 
 ggplot(all_years) +
   geom_line(aes(x = as_factor(year),
@@ -291,20 +361,36 @@ ggplot(all_years) +
                 color = age_group,
                 lty = age_group,
                 y = pct_indie)) +
-  scale_y_continuous(name = "Share of population who made a trip without a household adult",
+  geom_errorbar(aes(x = as_factor(year),
+                    group = age_group,
+                    color = age_group,
+                    lty = age_group,
+                    ymin = pct_indie - (1.96*pct_indie_se),
+                    ymax = pct_indie + (1.96*pct_indie_se)),
+                width = 0.1) +
+  scale_y_continuous(name = "Share of population who made\na trip without a household adult",
                      limits = c(0,1),
-                     breaks = breaks <- seq(0, 1, by = 0.05),
+                     breaks = breaks <- seq(0, 1, by = 0.1),
                      labels = paste0(breaks*100, "%")) +
   scale_x_discrete(name = "Year") +
   scale_color_discrete(name = "Age group",
                        labels = c("5 to 9",
                                   "10 to 15",
                                   "16 to 17")) +
-  scale_linetype_discrete(name = "Age group",
-                          labels = c("5 to 9",
-                                     "10 to 15",
-                                     "16 to 17")) +
-  theme_minimal()
+  scale_linetype_manual(name = "Age group",
+                        labels = c("5 to 9",
+                                   "10 to 15",
+                                   "16 to 17"),
+                        values = c("dotted",
+                                   "solid",
+                                   "dashed")) +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "white"))
+
+here("results",
+     "figures",
+     "pct_independent.png") %>%
+  ggsave(width = 5, height = 3, dpi = 300, units = "in")
 
 ggplot(all_years) +
   geom_line(aes(x = as_factor(year),
@@ -319,7 +405,7 @@ ggplot(all_years) +
                     ymin = pct_bike - (1.96*pct_bike_se),
                     ymax = pct_bike + (1.96*pct_bike_se)),
                 width = 0.1) +
-  scale_y_continuous(name = "Share of population who made a bike trip",
+  scale_y_continuous(name = "Share of population who\nmade a bike trip",
                      limits = c(0, 0.1),
                      breaks = breaks <- seq(0, 0.1, by = 0.01),
                      labels = paste0(breaks*100, "%")) +
@@ -328,11 +414,20 @@ ggplot(all_years) +
                        labels = c("5 to 9",
                                   "10 to 15",
                                   "16 to 17")) +
-  scale_linetype_discrete(name = "Age group",
-                          labels = c("5 to 9",
-                                     "10 to 15",
-                                     "16 to 17")) +
-  theme_minimal()
+  scale_linetype_manual(name = "Age group",
+                        labels = c("5 to 9",
+                                   "10 to 15",
+                                   "16 to 17"),
+                        values = c("dotted",
+                                   "solid",
+                                   "dashed")) +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "white"))
+
+here("results",
+     "figures",
+     "pct_bike.png") %>%
+  ggsave(width = 5, height = 3, dpi = 300, units = "in")
 
 ggplot(all_years) +
   geom_line(aes(x = as_factor(year),
@@ -340,7 +435,14 @@ ggplot(all_years) +
                 color = age_group,
                 lty = age_group,
                 y = pct_walk)) +
-  scale_y_continuous(name = "Share of population who made a walk trip",
+  geom_errorbar(aes(x = as_factor(year),
+                    group = age_group,
+                    color = age_group,
+                    lty = age_group,
+                    ymin = pct_walk - (1.96*pct_walk_se),
+                    ymax = pct_walk + (1.96*pct_walk_se)),
+                width = 0.1) +
+  scale_y_continuous(name = "Share of population who\nmade a walk trip",
                      limits = c(0, 0.4),
                      breaks = breaks <- seq(0, 0.4, by = 0.02),
                      labels = paste0(breaks*100, "%")) +
@@ -349,11 +451,20 @@ ggplot(all_years) +
                        labels = c("5 to 9",
                                   "10 to 15",
                                   "16 to 17")) +
-  scale_linetype_discrete(name = "Age group",
-                          labels = c("5 to 9",
-                                     "10 to 15",
-                                     "16 to 17")) +
-  theme_minimal()
+  scale_linetype_manual(name = "Age group",
+                        labels = c("5 to 9",
+                                   "10 to 15",
+                                   "16 to 17"),
+                        values = c("dotted",
+                                   "solid",
+                                   "dashed")) +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "white"))
+
+here("results",
+     "figures",
+     "pct_walk.png") %>%
+  ggsave(width = 5, height = 3, dpi = 300, units = "in")
 
 ggplot(all_years) +
   geom_line(aes(x = as_factor(year),
@@ -361,21 +472,36 @@ ggplot(all_years) +
                 color = age_group,
                 lty = age_group,
                 y = pct_transit)) +
-  scale_y_continuous(name = "Share of population who made a transit trip",
-                     limits = c(0, 0.06),
-                     breaks = breaks <- seq(0, 0.06, by = 0.005),
+  geom_errorbar(aes(x = as_factor(year),
+                    group = age_group,
+                    color = age_group,
+                    lty = age_group,
+                    ymin = pct_transit - (1.96*pct_transit_se),
+                    ymax = pct_transit + (1.96*pct_transit_se)),
+                width = 0.1) +
+  scale_y_continuous(name = "Share of population who\nmade a transit trip",
+                     limits = c(0, 0.07),
+                     breaks = breaks <- seq(0, 0.07, by = 0.005),
                      labels = paste0(breaks*100, "%")) +
   scale_x_discrete(name = "Year") +
   scale_color_discrete(name = "Age group",
                        labels = c("5 to 9",
                                   "10 to 15",
                                   "16 to 17")) +
-  scale_linetype_discrete(name = "Age group",
-                          labels = c("5 to 9",
-                                     "10 to 15",
-                                     "16 to 17")) +
-  theme_minimal()
+  scale_linetype_manual(name = "Age group",
+                        labels = c("5 to 9",
+                                   "10 to 15",
+                                   "16 to 17"),
+                        values = c("dotted",
+                                   "solid",
+                                   "dashed")) +
+  theme_minimal() +
+  theme(plot.background = element_rect(fill = "white"))
 
+here("results",
+     "figures",
+     "pct_transit.png") %>%
+  ggsave(width = 5, height = 3, dpi = 300, units = "in")
 
 
 
