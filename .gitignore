@@ -19,6 +19,7 @@
 
 # RStudio files
 .Rproj.user/
+*.Rproj
 
 # produced vignettes
 vignettes/*.html
@@ -37,3 +38,20 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+#NHTS files
+NHTS-2001/DAYPUB.csv
+NHTS-2001/HHPUB.csv
+NHTS-2001/PERPUB.csv
+NHTS-2001/VEHPUB.csv
+NHTS-2001/LDTPUB.csv
+
+NHTS-2009/DAYV2PUB.csv
+NHTS-2009/HHV2PUB.csv
+NHTS-2009/PERV2PUB.csv
+NHTS-2009/VEHV2PUB.csv
+
+NHTS-2017/trippub.csv
+NHTS-2017/hhpub.csv
+NHTS-2017/perpub.csv
+NHTS-2017/vehpub.csv
