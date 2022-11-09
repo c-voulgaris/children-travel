@@ -238,6 +238,10 @@ all_years <- rbind(summary_2017,
                    summary_2009,
                    summary_2001)
 
+write_csv(all_years,
+          here("results",
+               "usa-nhts-summary-data.csv"))
+
 ggplot(all_years) +
   geom_line(aes(x = as_factor(year),
                group = age_group,
@@ -371,6 +375,6 @@ ggplot(all_years) +
                                      "16 to 17")) +
   theme_minimal()
 
-# Number of survey-day trips
+
 
 
