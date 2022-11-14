@@ -274,7 +274,7 @@ ggplot(all_years) +
                                   "solid",
                                   "dashed")) +
   theme_minimal() +
-  theme(plot.background = element_rect(fill = "white"))
+  theme(plot.background = element_rect(fill = "white", color = NULL))
 
 here("results",
      "figures",
@@ -311,7 +311,7 @@ ggplot(all_years) +
                                    "solid",
                                    "dashed")) +
   theme_minimal() +
-  theme(plot.background = element_rect(fill = "white"))
+  theme(plot.background = element_rect(fill = "white", color = NULL))
 
 here("results",
      "figures",
@@ -348,7 +348,7 @@ ggplot(all_years) +
                                    "solid",
                                    "dashed")) +
   theme_minimal() +
-  theme(plot.background = element_rect(fill = "white"))
+  theme(plot.background = element_rect(fill = "white", color = NULL))
 
 here("results",
      "figures",
@@ -385,7 +385,7 @@ ggplot(all_years) +
                                    "solid",
                                    "dashed")) +
   theme_minimal() +
-  theme(plot.background = element_rect(fill = "white"))
+  theme(plot.background = element_rect(fill = "white", color = NULL))
 
 here("results",
      "figures",
@@ -422,7 +422,7 @@ ggplot(all_years) +
                                    "solid",
                                    "dashed")) +
   theme_minimal() +
-  theme(plot.background = element_rect(fill = "white"))
+  theme(plot.background = element_rect(fill = "white", color = NULL))
 
 here("results",
      "figures",
@@ -459,7 +459,7 @@ ggplot(all_years) +
                                    "solid",
                                    "dashed")) +
   theme_minimal() +
-  theme(plot.background = element_rect(fill = "white"))
+  theme(plot.background = element_rect(fill = "white", color = NULL))
 
 here("results",
      "figures",
@@ -496,7 +496,7 @@ ggplot(all_years) +
                                    "solid",
                                    "dashed")) +
   theme_minimal() +
-  theme(plot.background = element_rect(fill = "white"))
+  theme(plot.background = element_rect(fill = "white", color = NULL))
 
 here("results",
      "figures",
